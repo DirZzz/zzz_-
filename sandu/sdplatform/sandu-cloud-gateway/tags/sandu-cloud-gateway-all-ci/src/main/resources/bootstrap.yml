@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: sandu-cloud-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: sandu-cloud-config
+      name: sandu-cloud-gateway
+      profile: ci
+      fail-fast: true
+      
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.10.30.165:10100/eureka/,http://10.10.30.166:10100/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip:NoIp}:${server.port}

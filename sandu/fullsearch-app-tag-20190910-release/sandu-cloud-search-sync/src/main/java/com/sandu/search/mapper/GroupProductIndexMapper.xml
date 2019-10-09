@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.search.dao.GroupProductIndexDao">
+
+    <!-- 查询产品分类关联信息-->
+    <select id="queryGroupProductList" resultType="com.sandu.search.entity.elasticsearch.po.GroupProductPo">
+          SELECT DISTINCT
+            a.id 										id,
+            a.group_code 								groupCode,
+            a.group_name 								groupName,
+            a.state 									state,
+            a.composite_type 						    compositeType,
+            a.brand_id 	                                brandId,
+            IF(ISNULL(a.space_area_value),0,a.space_area_value)	spaceAreaValue,
+            a.group_type 								groupType,
+            a.type 										houseType,
+            a.user_id 									userId,
+            a.group_price 							    groupPrice,
+            a.advice_price							    advicePrice,
+            a.gmt_modified 							    gmtModified,
+            a.is_display								isDisplay,
+            a.is_deleted								dataIsDeleted,
+            a.secrecy_flag								secrecyFlag,
+            c.id 										mainProductId,
+            c.product_type_value 				        productTypeValue,
+            c.product_small_type_value	                productSmallTypeValue,
+            d.pic_path 									picPath,
+            f.third_stage_code 					        categoryCode
+        FROM
+            group_product a
+        LEFT JOIN group_product_details b ON b.group_id = a.id
+        LEFT JOIN base_product c ON c.id = b.product_id
+        LEFT JOIN res_pic d ON d.id = a.pic_id
+        LEFT JOIN product_category_rel e ON e.product_id = c.id
+        LEFT JOIN pro_category f ON f.id = e.category_id
+        WHERE 1=1
+        <if test="groupIdList != null and groupIdList.size() > 0">
+            and a.id IN
+            <foreach collection="groupIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        AND a.design_templet_id = 0
+        AND a.is_deleted = 0
+        AND b.is_main = 1
+        LIMIT
+            #{start},#{limit}
+    </select>
+
+</mapper>

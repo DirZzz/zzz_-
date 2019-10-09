@@ -1,0 +1,10 @@
+server:
+  port: 10110
+  
+turbine:
+  appConfig: sandu-cloud-gateway
+  instanceUrlSuffix: /actuator/hystrix.stream
+  clusterNameExpression: "'default'"
+
+      
+      

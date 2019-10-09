@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.search.dao.HouseIndexDao">
+
+    <!-- 获取户型信息 -->
+    <select id="queryHousePoList" parameterType="int"
+            resultType="com.sandu.search.entity.elasticsearch.po.house.HousePo">
+        SELECT
+          id                  AS houseId,
+          sys_code            AS systemCode,
+          house_code          AS houseCode,
+          house_door_code     AS houseDoorCode,
+          house_name          AS houseName,
+          pic_res1_id         AS housePicId,
+          living_id           AS houseLivingId,
+          total_area          AS houseTotalArea,
+          house_common_code   AS houseCommonCode,
+          area_long_code      AS houseAreaLongCode,
+          is_public           AS houseStatus
+        FROM
+            base_house
+        WHERE
+            is_deleted = 0
+        LIMIT
+            #{start},#{limit}
+    </select>
+
+    <select id="selectHouseByLivingIds" resultType="com.sandu.search.entity.elasticsearch.po.house.HouseLivingPo">
+        SELECT
+            l.id as livingId,
+            l.living_name as livingName,
+            COUNT(DISTINCT h.id) AS totalHouse,
+            l.area_id as areaCode,
+            l.gmt_create as gmtCreate,
+            area.pid as cityCode
+        FROM
+            base_living l
+        LEFT JOIN base_house h ON l.id = h.living_id
+        AND h.is_deleted = 0
+        LEFT JOIN house_space_new s ON (s.house_id = h.id)
+        LEFT JOIN space_common c ON (s.standard_space_id = c.id)
+        LEFT JOIN design_templet t ON (t.space_common_id = c.id)
+        LEFT JOIN base_area area on l.area_id = area.area_code
+        WHERE
+            1 = 1
+        AND c.origin = 1
+        AND l.is_deleted = 0
+        AND h.is_deleted = 0
+        AND s.is_deleted = 0
+        AND c.is_deleted = 0
+        AND t.is_deleted = 0
+        AND t.id IS NOT NULL
+        AND c.id IS NOT NULL
+        AND h.data_type = 0
+        AND l.id IN
+        <foreach collection="livingIds" item="livingId" open="(" separator="," close=")">
+            #{livingId}
+        </foreach>
+        GROUP BY l.id
+    </select>
+
+    <select id="selectHouseChangeBeforeOneMin" resultType="integer">
+         SELECT
+				DISTINCT
+				h.living_id
+        FROM
+				base_house h
+        LEFT JOIN house_space_new s ON (s.house_id = h.id)
+        LEFT JOIN space_common c ON (s.standard_space_id = c.id)
+        LEFT JOIN design_templet t ON (t.space_common_id = c.id)
+        WHERE
+            1 = 1
+        AND c.origin = 1
+        AND s.is_deleted = 0
+        AND c.is_deleted = 0
+        AND t.is_deleted = 0
+        AND t.id IS NOT NULL
+        AND c.id IS NOT NULL
+        AND h.data_type = 0
+		AND h.gmt_modified BETWEEN date_sub(now(), interval 1 MINUTE) and NOW()
+    </select>
+
+</mapper>

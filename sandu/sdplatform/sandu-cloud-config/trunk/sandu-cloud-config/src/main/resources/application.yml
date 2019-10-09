@@ -1,0 +1,37 @@
+server:
+  port: 10120
+  
+spring:
+  application:
+    name: sandu-cloud-config
+    
+  cloud:
+    config:
+      server:
+        svn:
+          uri: https://svns.sanduspace.cn/svn/nork/bigdata/code/config-center/trunk/
+          username: chenww
+          password: ww0909
+          default-label: ci
+  profiles:
+    active: subversion
+
+  rabbitmq:
+    host: 192.168.1.227
+    port: 5672
+    username: guest
+    password: guest
+    
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.1.225:10100/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip:NoIp}:${server.port}
+      
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh

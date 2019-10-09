@@ -1,0 +1,11 @@
+package com.sandu.cloud.activity.bargain.api;
+
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/bargain")
+public class BargainServiceApi {
+
+}
