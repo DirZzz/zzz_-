@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.statistics.dao.UserResourceStatisticsDao" >
+  <resultMap id="BaseResultMap" type="com.sandu.api.statistics.model.UserResourceStatistics" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="plan_render" property="planRender" jdbcType="VARCHAR" />
+    <result column="plan_config" property="planConfig" jdbcType="VARCHAR" />
+    <result column="scene_plan_render" property="scenePlanRender" jdbcType="VARCHAR" />
+    <result column="scene_plan_config" property="scenePlanConfig" jdbcType="VARCHAR" />
+    <result column="texture" property="texture" jdbcType="VARCHAR" />
+    <result column="stick_chart" property="stickChart" jdbcType="VARCHAR" />
+    <result column="model" property="model" jdbcType="VARCHAR" />
+    <result column="shop" property="shop" jdbcType="VARCHAR" />
+    <result column="shop_bowen" property="shopBowen" jdbcType="VARCHAR" />
+    <result column="shop_engineering" property="shopEngineering" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="INTEGER" />
+    <result column="day" property="day" jdbcType="INTEGER" />
+    <result column="week" property="week" jdbcType="INTEGER" />
+    <result column="month" property="month" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="sys_code" property="sysCode" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, plan_render, plan_config, scene_plan_render, scene_plan_config, texture, 
+    stick_chart, model, shop, shop_bowen, shop_engineering, date, day, week, month, year, 
+    sys_code, creator, gmt_create, modifier, gmt_modified, is_deleted, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from data_statistics.user_resource_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from data_statistics.user_resource_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.sandu.api.statistics.model.UserResourceStatistics" >
+    insert into data_statistics.user_resource_statistics
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="planRender != null" >
+        plan_render,
+      </if>
+      <if test="planConfig != null" >
+        plan_config,
+      </if>
+      <if test="scenePlanRender != null" >
+        scene_plan_render,
+      </if>
+      <if test="scenePlanConfig != null" >
+        scene_plan_config,
+      </if>
+      <if test="texture != null" >
+        texture,
+      </if>
+      <if test="stickChart != null" >
+        stick_chart,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="shop != null" >
+        shop,
+      </if>
+      <if test="shopBowen != null" >
+        shop_bowen,
+      </if>
+      <if test="shopEngineering != null" >
+        shop_engineering,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="day != null" >
+        day,
+      </if>
+      <if test="week != null" >
+        week,
+      </if>
+      <if test="month != null" >
+        month,
+      </if>
+      <if test="year != null" >
+        year,
+      </if>
+      <if test="sysCode != null" >
+        sys_code,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="planRender != null" >
+        #{planRender,jdbcType=VARCHAR},
+      </if>
+      <if test="planConfig != null" >
+        #{planConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="scenePlanRender != null" >
+        #{scenePlanRender,jdbcType=VARCHAR},
+      </if>
+      <if test="scenePlanConfig != null" >
+        #{scenePlanConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="texture != null" >
+        #{texture,jdbcType=VARCHAR},
+      </if>
+      <if test="stickChart != null" >
+        #{stickChart,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null" >
+        #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="shopBowen != null" >
+        #{shopBowen,jdbcType=VARCHAR},
+      </if>
+      <if test="shopEngineering != null" >
+        #{shopEngineering,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=INTEGER},
+      </if>
+      <if test="day != null" >
+        #{day,jdbcType=INTEGER},
+      </if>
+      <if test="week != null" >
+        #{week,jdbcType=INTEGER},
+      </if>
+      <if test="month != null" >
+        #{month,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="sysCode != null" >
+        #{sysCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sandu.api.statistics.model.UserResourceStatistics" >
+    update data_statistics.user_resource_statistics
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="planRender != null" >
+        plan_render = #{planRender,jdbcType=VARCHAR},
+      </if>
+      <if test="planConfig != null" >
+        plan_config = #{planConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="scenePlanRender != null" >
+        scene_plan_render = #{scenePlanRender,jdbcType=VARCHAR},
+      </if>
+      <if test="scenePlanConfig != null" >
+        scene_plan_config = #{scenePlanConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="texture != null" >
+        texture = #{texture,jdbcType=VARCHAR},
+      </if>
+      <if test="stickChart != null" >
+        stick_chart = #{stickChart,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null" >
+        shop = #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="shopBowen != null" >
+        shop_bowen = #{shopBowen,jdbcType=VARCHAR},
+      </if>
+      <if test="shopEngineering != null" >
+        shop_engineering = #{shopEngineering,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=INTEGER},
+      </if>
+      <if test="day != null" >
+        day = #{day,jdbcType=INTEGER},
+      </if>
+      <if test="week != null" >
+        week = #{week,jdbcType=INTEGER},
+      </if>
+      <if test="month != null" >
+        month = #{month,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="sysCode != null" >
+        sys_code = #{sysCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+            <include refid="Base_Column_List" />
+        from
+            data_statistics.user_resource_statistics
+        <where>
+            <if test="userId != null" >
+              AND user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="planRender != null" >
+              AND plan_render = #{planRender,jdbcType=VARCHAR}
+            </if>
+            <if test="planConfig != null" >
+              AND plan_config = #{planConfig,jdbcType=VARCHAR}
+            </if>
+            <if test="scenePlanRender != null" >
+              AND  scene_plan_render = #{scenePlanRender,jdbcType=VARCHAR}
+            </if>
+            <if test="scenePlanConfig != null" >
+              AND   scene_plan_config = #{scenePlanConfig,jdbcType=VARCHAR}
+            </if>
+            <if test="texture != null" >
+              AND  texture = #{texture,jdbcType=VARCHAR}
+            </if>
+            <if test="stickChart != null" >
+              AND stick_chart = #{stickChart,jdbcType=VARCHAR}
+            </if>
+            <if test="model != null" >
+              AND  model = #{model,jdbcType=VARCHAR}
+            </if>
+            <if test="shop != null" >
+              AND  shop = #{shop,jdbcType=VARCHAR}
+            </if>
+            <if test="shopBowen != null" >
+              AND shop_bowen = #{shopBowen,jdbcType=VARCHAR}
+            </if>
+            <if test="shopEngineering != null" >
+              AND  shop_engineering = #{shopEngineering,jdbcType=VARCHAR}
+            </if>
+            <if test="date != null" >
+              AND  date = #{date,jdbcType=INTEGER}
+            </if>
+            <if test="day != null" >
+              AND day = #{day,jdbcType=INTEGER}
+            </if>
+            <if test="week != null" >
+              AND week = #{week,jdbcType=INTEGER}
+            </if>
+            <if test="month != null" >
+              AND  month = #{month,jdbcType=INTEGER}
+            </if>
+            <if test="year != null" >
+              AND  year = #{year,jdbcType=INTEGER}
+            </if>
+            <if test="sysCode != null" >
+              AND  sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="creator != null" >
+              AND creator = #{creator,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtCreate != null" >
+              AND gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifier != null" >
+              AND modifier = #{modifier,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtModified != null" >
+              AND  gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+            </if>
+            <if test="isDeleted != null" >
+              AND is_deleted = #{isDeleted,jdbcType=INTEGER}
+            </if>
+            <if test="remark != null" >
+              AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

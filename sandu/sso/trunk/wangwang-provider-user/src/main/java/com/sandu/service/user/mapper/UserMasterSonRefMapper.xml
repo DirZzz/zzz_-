@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.user.dao.UserMasterSonRefDao" >
+  <resultMap id="BaseResultMap" type="com.sandu.api.user.model.UserMasterSonRef" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="master_id" property="masterId" jdbcType="INTEGER" />
+    <result column="son_id" property="sonId" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="sys_code" property="sysCode" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, master_id, son_id, company_id, sys_code, creator, gmt_create, modifier, gmt_modified, 
+    is_deleted, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_master_son_ref
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_master_son_ref
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.sandu.api.user.model.UserMasterSonRef" >
+    insert into user_master_son_ref
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="masterId != null" >
+        master_id,
+      </if>
+      <if test="sonId != null" >
+        son_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="sysCode != null" >
+        sys_code,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="masterId != null" >
+        #{masterId,jdbcType=INTEGER},
+      </if>
+      <if test="sonId != null" >
+        #{sonId,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="sysCode != null" >
+        #{sysCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sandu.api.user.model.UserMasterSonRef" >
+    update user_master_son_ref
+    <set >
+      <if test="masterId != null" >
+        master_id = #{masterId,jdbcType=INTEGER},
+      </if>
+      <if test="sonId != null" >
+        son_id = #{sonId,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="sysCode != null" >
+        sys_code = #{sysCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectMasterSonUserList" parameterType="com.sandu.api.user.input.UserMasterSonSearch" resultType="com.sandu.api.user.output.UserMasterSonVO">
+      SELECT
+          su.id,
+          su.user_name AS userName,
+          su.nick_name AS nickName,
+          su.mobile,
+          su.user_type AS userType,
+          su.master_son_type AS masterSonType
+      FROM
+          sys_user su
+          INNER JOIN user_master_son_ref msr ON su.id = msr.son_id
+      WHERE
+          msr.is_deleted = 0
+          AND su.is_deleted = 0
+      <if test="null != masterUserId">
+          AND msr.master_id = #{masterUserId}
+      </if>
+      <if test="null != nickName">
+        AND su.nick_name LIKE  CONCAT(CONCAT('%',#{nickName,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="null != mobile">
+        AND su.mobile LIKE  CONCAT(CONCAT('%',#{mobile,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="null != userType">
+          AND su.user_type = #{userType}
+      </if>
+      <if test="null != masterSonType">
+          AND su.master_son_type = #{masterSonType}
+      </if>
+  </select>
+
+    <delete id="deleteMasterSonRef">
+        DELETE FROM user_master_son_ref
+        WHERE
+        <if test="null != masterUserId">
+            master_id = #{masterUserId}
+        </if>
+        <if test="null != sonUserId">
+          son_id = #{sonUserId}
+        </if>
+    </delete>
+
+    <insert id="bacthInsert">
+      INSERT INTO user_master_son_ref
+      ( master_id, son_id, company_id, sys_code, creator, gmt_create, modifier, gmt_modified, is_deleted, remark )
+      VALUES
+      <foreach collection="userMasterSonRefList" item="item" separator=",">
+        (
+          #{item.masterId,jdbcType=INTEGER},
+          #{item.sonId,jdbcType=INTEGER},
+          #{item.companyId,jdbcType=INTEGER},
+          #{item.sysCode,jdbcType=VARCHAR},
+          #{item.creator,jdbcType=VARCHAR},
+          #{item.gmtCreate,jdbcType=TIMESTAMP},
+          #{item.modifier,jdbcType=VARCHAR},
+          #{item.gmtModified,jdbcType=TIMESTAMP},
+          #{item.isDeleted,jdbcType=INTEGER},
+          #{item.remark,jdbcType=VARCHAR}
+        )
+      </foreach>
+    </insert>
+
+</mapper>

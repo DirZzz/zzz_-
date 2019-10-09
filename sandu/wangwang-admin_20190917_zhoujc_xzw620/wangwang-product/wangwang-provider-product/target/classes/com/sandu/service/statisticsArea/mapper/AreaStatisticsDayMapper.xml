@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.statisticsArea.dao.AreaStatisticsDayMapper">
+    <resultMap id="BaseResultMap" type="com.sandu.api.statisticsArea.model.AreaStatisticsDay">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="province_code" jdbcType="VARCHAR" property="provinceCode"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_code" jdbcType="VARCHAR" property="cityCode"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="active_user_count" jdbcType="INTEGER" property="activeUserCount"/>
+        <result column="new_user_count" jdbcType="INTEGER" property="newUserCount"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="MODIFIER" jdbcType="VARCHAR" property="modifer"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="areaName" jdbcType="VARCHAR" property="areaName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, start_time, end_time, province_code, province_name, city_code, city_name, active_user_count,
+        new_user_count, creator, gmt_create, MODIFIER, gmt_modified, is_deleted, remark
+    </sql>
+
+    <select id="selectNewDetailList" parameterType="com.sandu.api.statisticsArea.model.AreaStatisticsDay" resultMap="BaseResultMap">
+        SELECT * FROM (
+            SELECT
+            id,
+            <if test="areaType == 0">
+                province_name as areaName,
+            </if>
+            <if test="areaType == 1">
+                city_name as areaName,
+            </if>
+            sum(new_user_count) new_user_count,
+            sum(active_user_count) active_user_count
+            from
+            data_statistics.bigdata_area_statistics_2b_day
+            WHERE
+            is_deleted = 0
+            <if test="time == 0">
+                and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+            </if>
+            <if test="time == 1">
+                and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 2">
+                and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 3">
+                and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+            </if>
+            <if test="areaType == 0">
+                group by province_code
+            </if>
+            <if test="areaType == 1">
+                group by city_code
+            </if>
+            order by new_user_count desc
+            limit 0,30 ) AS newArea
+    </select>
+
+    <select id="selectActiveDetailList" parameterType="com.sandu.api.statisticsArea.model.AreaStatisticsDay" resultMap="BaseResultMap">
+        SELECT * FROM (
+            SELECT
+                id,
+            <if test="areaType == 0">
+                province_name as areaName,
+            </if>
+            <if test="areaType == 1">
+                city_name as areaName,
+            </if>
+            sum(active_user_count) active_user_count,
+            sum(new_user_count) new_user_count
+        from
+            data_statistics.bigdata_area_statistics_2b_day
+            WHERE
+            is_deleted = 0
+            <if test="time == 0">
+                and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+            </if>
+            <if test="time == 1">
+                and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 2">
+                and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 3">
+                and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+            </if>
+            <if test="areaType == 0">
+                group by province_code
+            </if>
+            <if test="areaType == 1">
+                group by city_code
+            </if>
+            order by active_user_count desc
+            limit 0,30 ) AS activeArea
+    </select>
+
+    <select id="selectNewHotArea" parameterType="com.sandu.api.statisticsArea.model.AreaStatisticsDay" resultMap="BaseResultMap">
+        SELECT
+            id,
+        <if test="areaType == 0">
+            province_name as areaName,
+        </if>
+        <if test="areaType == 1">
+            city_name as areaName,
+        </if>
+            sum(new_user_count) new_user_count
+        from
+            data_statistics.bigdata_area_statistics_2b_day
+        WHERE
+            is_deleted = 0
+        <if test="time == 0">
+            and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+        <if test="areaType == 0">
+            group by province_code
+        </if>
+        <if test="areaType == 1">
+            group by city_code
+        </if>
+        order by new_user_count desc
+        limit 0,10
+    </select>
+
+    <select id="selectActiveHotArea" parameterType="com.sandu.api.statisticsArea.model.AreaStatisticsDay" resultMap="BaseResultMap">
+        SELECT
+            id,
+        <if test="areaType == 0">
+            province_name as areaName,
+        </if>
+        <if test="areaType == 1">
+            city_name as areaName,
+        </if>
+            sum(active_user_count) active_user_count
+        from
+            data_statistics.bigdata_area_statistics_2b_day
+        WHERE
+            is_deleted = 0
+        <if test="time == 0">
+            and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+        <if test="areaType == 0">
+            group by province_code
+        </if>
+        <if test="areaType == 1">
+            group by city_code
+        </if>
+        order by active_user_count desc
+        limit 0,10
+    </select>
+
+</mapper>

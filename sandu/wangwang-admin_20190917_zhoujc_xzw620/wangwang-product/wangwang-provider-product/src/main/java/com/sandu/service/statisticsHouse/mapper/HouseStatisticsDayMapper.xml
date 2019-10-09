@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.statisticsHouse.dao.HouseStatisticsDayMapper">
+
+    <select id="selectDayHouseList" parameterType="com.sandu.api.statisticsHouse.model.HouseStatistics"
+            resultType="com.sandu.api.statisticsHouse.model.HouseStatistics">
+        select
+            id,
+        <if test="type == 1">
+            sum(new_house_count) newHouseCount,
+        </if>
+        <if test="type == 0">
+            sum(use_house_count) useHouseCount,
+        </if>
+        DATE_FORMAT ( start_time, '%Y/%m/%d' ) start_time
+        from
+            data_statistics.bigdata_house_statistics_2b_day
+        where is_deleted = 0
+        <if test="type == 1">
+            and new_house_count &lt;&gt; 0
+        </if>
+        <if test="type == 0">
+            and use_house_count &lt;&gt; 0
+        </if>
+        <if test="provinceCode != null and provinceCode != '' ">
+            and province_code = #{provinceCode,jdbcType=VARCHAR}
+        </if>
+        <if test="cityCode != null and cityCode != '' ">
+            and city_code = #{cityCode,jdbcType=VARCHAR}
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+        group by start_time
+        ORDER BY start_time DESC
+    </select>
+
+    <select id="selectDayHouseTotal" parameterType="com.sandu.api.statisticsHouse.model.HouseStatistics"
+            resultType="com.sandu.api.statisticsHouse.model.HouseStatistics">
+        select
+        sum(new_house_count) as newHouseTotal,
+        sum(use_house_count) as useHouseTotal
+        from
+        data_statistics.bigdata_house_statistics_2b_day
+        where is_deleted = 0
+        <if test="provinceCode != null and provinceCode != '' ">
+            and province_code = #{provinceCode,jdbcType=VARCHAR}
+        </if>
+        <if test="cityCode != null and cityCode != '' ">
+            and city_code = #{cityCode,jdbcType=VARCHAR}
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+    </select>
+
+    <select id="selectDayHouseChart" parameterType="com.sandu.api.statisticsHouse.model.HouseStatistics"
+            resultType="com.sandu.api.statisticsHouse.model.HouseStatistics">
+        SELECT
+        IFNULL( a.newHouseCount, 0 ) newHouseCount,
+        IFNULL( a.useHouseCount, 0 ) useHouseCount,
+        b.dates startTime
+        FROM
+        (
+        SELECT
+        id,
+        sum(new_house_count) newHouseCount,
+        sum(use_house_count) useHouseCount,
+        DATE_FORMAT ( start_time, '%m/%d' ) startTime
+        FROM
+        data_statistics.bigdata_house_statistics_2b_day
+        WHERE
+        is_deleted = 0
+        <if test="provinceCode != null and provinceCode != '' ">
+            and province_code = #{provinceCode,jdbcType=VARCHAR}
+        </if>
+        <if test="cityCode != null and cityCode != '' ">
+            and city_code = #{cityCode,jdbcType=VARCHAR}
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+        group by startTime
+        ORDER BY startTime ASC
+        ) a
+        RIGHT JOIN (
+        SELECT
+        DATE_FORMAT ( @date := DATE_ADD( @date, INTERVAL - 1 DAY ), '%m/%d' ) dates
+        FROM
+        <if test="time == 3">
+            (SELECT @date := DATE_ADD(date_add(curdate(),interval -day(curdate())+1 day), INTERVAL 0 day )
+            FROM sys_user) days
+        </if>
+        <if test="time == 1 or time == 2">
+            ( SELECT @date := DATE_ADD( NOW( ), INTERVAL 0 DAY ) FROM sys_user ) days
+        </if>
+        <if test="time == 1">
+            LIMIT 7
+        </if>
+        <if test="time == 2">
+            LIMIT 30
+        </if>
+        <if test="time == 3">
+            LIMIT #{day}
+        </if>
+        ) b
+        ON b.dates = a.startTime
+        ORDER BY b.dates ASC
+    </select>
+
+</mapper>

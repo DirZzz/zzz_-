@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.solution.dao.MiniProObtainMobileDetailMapper">
+
+    <select id="listByAppId" resultType="com.sandu.api.solution.model.MiniProObtainMobileDetail">
+        SELECT
+          *
+        from
+          mini_pro_obtain_mobile_detail
+        WHERE
+          app_id = #{appid} AND
+          is_deleted = 0;
+    </select>
+
+
+    <insert id="batchInsert">
+        insert into mini_pro_obtain_mobile_detail
+            (
+              app_id,free_num,cur_remain_num,creator,title,
+              gmt_create,modifier,gmt_modified,is_limit,uuid,
+              is_deleted
+            )
+            values
+        <foreach collection="insertList" item="item" separator=",">
+            (
+              #{item.appId},#{item.freeNum},#{item.curRemainNum},#{item.creator},#{item.title},
+              #{item.gmtCreate},#{item.modifier},#{item.gmtModified},#{item.isLimit},#{item.uuid},
+              #{item.isDeleted}
+            )
+        </foreach>
+    </insert>
+
+
+    <update id="updateBatch">
+       <foreach collection="updateList" item="item" separator=";">
+           update
+            mini_pro_obtain_mobile_detail
+           SET
+            free_num = #{item.freeNum},
+            cur_remain_num = #{item.curRemainNum},
+            gmt_modified = #{item.gmtModified},
+            is_limit = #{item.isLimit},
+            modifier = #{item.modifier},
+            title  = #{item.title}
+           where
+            uuid = #{item.uuid} and
+            is_deleted = 0
+       </foreach>
+    </update>
+
+    <select id="findListLimit1" resultType="com.sandu.api.solution.model.MiniProObtainMobileDetail">
+        SELECT * from  mini_pro_obtain_mobile_detail where is_deleted = 0 and is_limit = 1
+    </select>
+
+    <update id="updateCurRemainNumByIds">
+        UPDATE
+          mini_pro_obtain_mobile_detail
+        SET
+          cur_remain_num = free_num,
+          gmt_modified = now()
+        WHERE
+          is_deleted = 0 AND
+          id in
+          <foreach collection="ids" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+    </update>
+
+    <select id="findObtainDetailIdsByCompanyId" resultType="long">
+        SELECT
+          md.id
+        from
+          mini_pro_obtain_mobile_detail md,
+          base_company_mini_program_config bc
+        where
+        md.app_id = bc.app_id and
+        bc.company_id  = #{companyId}
+        and md.is_deleted = 0
+    </select>
+
+</mapper>

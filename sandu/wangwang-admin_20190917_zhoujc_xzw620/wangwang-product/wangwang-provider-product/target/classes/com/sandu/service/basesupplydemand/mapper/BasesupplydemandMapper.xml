@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.basesupplydemand.dao.BasesupplydemandMapper">
+    <resultMap id="BaseResultMap" type="com.sandu.api.basesupplydemand.model.Basesupplydemand">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="creator_id" jdbcType="INTEGER" property="creatorId"/>
+        <result column="creator_type_value" jdbcType="INTEGER" property="creatorTypeValue"/>
+        <result column="supply_demand_category_id" jdbcType="VARCHAR" property="supplyDemandCategoryId"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="district" jdbcType="VARCHAR" property="district"/>
+        <result column="street" jdbcType="VARCHAR" property="street"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="cover_pic_id" jdbcType="VARCHAR" property="coverPicId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="description_pic_id" jdbcType="VARCHAR" property="descriptionPicId"/>
+        <result column="decoration_company" jdbcType="INTEGER" property="decorationCompany"/>
+        <result column="designer" jdbcType="INTEGER" property="designer"/>
+        <result column="material_shop" jdbcType="INTEGER" property="materialShop"/>
+        <result column="proprietor" jdbcType="INTEGER" property="proprietor"/>
+        <result column="builder" jdbcType="INTEGER" property="builder"/>
+        <result column="push_status" jdbcType="INTEGER" property="pushStatus"/>
+        <result column="business_status" jdbcType="INTEGER" property="businessStatus"/>
+        <result column="gmt_publish" jdbcType="TIMESTAMP" property="gmtPublish"/>
+        <result column="sys_code" jdbcType="VARCHAR" property="sysCode"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="contact" jdbcType="VARCHAR" property="contact"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="view_num" jdbcType="INTEGER" property="viewNum"/>
+        <result column="recommended_time" property="recommendedTime"/>
+        <result column="new_data_flag" property="newDataFlag"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,creator_id,creator_type_value,supply_demand_category_id,province,city,district,street,address,cover_pic_id,title,description,description_pic_id,decoration_company,designer,material_shop,proprietor,builder,push_status,business_status,gmt_publish,sys_code,creator,gmt_create,modifier,gmt_modified,is_deleted,remark,contact,phone,view_num,recommended_time,new_data_flag
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.sandu.api.basesupplydemand.model.Basesupplydemand">
+        insert into base_supply_demand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="creatorId != null">
+                creator_id,
+            </if>
+            <if test="creatorTypeValue != null">
+                creator_type_value,
+            </if>
+            <if test="supplyDemandCategoryId != null">
+                supply_demand_category_id,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="district != null">
+                district,
+            </if>
+            <if test="street != null">
+                street,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="coverPicId != null">
+                cover_pic_id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="descriptionPicId != null">
+                description_pic_id,
+            </if>
+            <if test="decorationCompany != null">
+                decoration_company,
+            </if>
+            <if test="designer != null">
+                designer,
+            </if>
+            <if test="materialShop != null">
+                material_shop,
+            </if>
+            <if test="proprietor != null">
+                proprietor,
+            </if>
+            <if test="builder != null">
+                builder,
+            </if>
+            <if test="pushStatus != null">
+                push_status,
+            </if>
+            <if test="businessStatus != null">
+                business_status,
+            </if>
+            <if test="gmtPublish != null">
+                gmt_publish,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="contact != null">
+                contact,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="viewNum != null">
+                view_num,
+            </if>
+            <if test="recommendedTime != null">
+                recommended_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="creatorId != null">
+                #{creatorId,jdbcType=INTEGER},
+            </if>
+            <if test="creatorTypeValue != null">
+                #{creatorTypeValue,jdbcType=INTEGER},
+            </if>
+            <if test="supplyDemandCategoryId != null">
+                #{supplyDemandCategoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="street != null">
+                #{street,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="coverPicId != null">
+                #{coverPicId,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="descriptionPicId != null">
+                #{descriptionPicId,jdbcType=VARCHAR},
+            </if>
+            <if test="decorationCompany != null">
+                #{decorationCompany,jdbcType=INTEGER},
+            </if>
+            <if test="designer != null">
+                #{designer,jdbcType=INTEGER},
+            </if>
+            <if test="materialShop != null">
+                #{materialShop,jdbcType=INTEGER},
+            </if>
+            <if test="proprietor != null">
+                #{proprietor,jdbcType=INTEGER},
+            </if>
+            <if test="builder != null">
+                #{builder,jdbcType=INTEGER},
+            </if>
+            <if test="pushStatus != null">
+                #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="businessStatus != null">
+                #{businessStatus,jdbcType=INTEGER},
+            </if>
+            <if test="gmtPublish != null">
+                #{gmtPublish,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="contact != null">
+                #{contact,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="viewNum != null">
+                #{viewNum,jdbcType=INTEGER},
+            </if>
+            <if test="recommendTime != null">
+                #{recommendTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.sandu.api.basesupplydemand.model.Basesupplydemand">
+        update base_supply_demand
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="creatorId != null">
+                creator_id = #{creatorId,jdbcType=INTEGER},
+            </if>
+            <if test="creatorTypeValue != null">
+                creator_type_value = #{creatorTypeValue,jdbcType=INTEGER},
+            </if>
+            <if test="supplyDemandCategoryId != null">
+                supply_demand_category_id = #{supplyDemandCategoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                district = #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="street != null">
+                street = #{street,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="coverPicId != null">
+                cover_pic_id = #{coverPicId,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="descriptionPicId != null">
+                description_pic_id = #{descriptionPicId,jdbcType=VARCHAR},
+            </if>
+            <if test="decorationCompany != null">
+                decoration_company = #{decorationCompany,jdbcType=INTEGER},
+            </if>
+            <if test="designer != null">
+                designer = #{designer,jdbcType=INTEGER},
+            </if>
+            <if test="materialShop != null">
+                material_shop = #{materialShop,jdbcType=INTEGER},
+            </if>
+            <if test="proprietor != null">
+                proprietor = #{proprietor,jdbcType=INTEGER},
+            </if>
+            <if test="builder != null">
+                builder = #{builder,jdbcType=INTEGER},
+            </if>
+            <if test="pushStatus != null">
+                push_status = #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="businessStatus != null">
+                business_status = #{businessStatus,jdbcType=INTEGER},
+            </if>
+            <if test="gmtPublish != null">
+                gmt_publish = #{gmtPublish,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="contact != null">
+                contact = #{contact,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="viewNum != null">
+                view_num = #{viewNum,jdbcType=INTEGER},
+            </if>
+            <if test="recommendedTime != null">
+                recommended_time = #{recommendedTime},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update base_supply_demand set is_deleted = 1
+        where id IN
+        <foreach separator="," open="(" close=")" collection="basesupplydemandIds" item="basesupplydemandId">
+            #{basesupplydemandId}
+        </foreach>
+    </update>
+    <update id="baseSupplyToTop">
+        update base_supply_demand
+        set recommended_time = #{topId}
+        where id =#{id}
+    </update>
+    <update id="baseSupplyToRefresh">
+        update base_supply_demand
+        set gmt_modified = now()
+        where id =#{basesupplydemandId}
+    </update>
+    <update id="updateNodeDetailsValue">
+        update node_info node, node_info_detail detail
+        set detail.value = #{value}
+        where node.id = detail.node_id
+        and node.node_type = #{nodeType} and content_id = #{contentId}
+        and detail_type = #{detailsType};
+    </update>
+    <delete id="deleteByIds">
+        update base_supply_demand set is_deleted = 1
+        where id IN
+        <foreach separator="," open="(" close=")" collection="ids" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteDemandInfoRel">
+
+        update demand_info_rel set is_deleted =1
+        where supply_demand_id = #{id}
+        and (
+        house_id not in
+        <foreach collection="houseIds" item="it" close=")" open="(" separator=",">
+            #{it}
+        </foreach>
+        or
+        plan_id not in
+        <foreach collection="planIds" item="it" close=")" open="(" separator=",">
+            #{it}
+        </foreach>
+        )
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_supply_demand
+        where id = #{basesupplydemandId,jdbcType=INTEGER}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap" parameterType="com.sandu.api.basesupplydemand.input.BasesupplydemandQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from base_supply_demand
+        where is_deleted=0
+        <if test="supplyDemandCategoryId != null">
+            AND CONCAT(',', supply_demand_category_id, ',') LIKE CONCAT('%,', #{supplyDemandCategoryId}, ',%')
+        </if>
+        <if test="queryParam != null">
+            and (
+            title like concat ('%',#{queryParam},'%') or
+            creator like concat ('%',#{queryParam},'%')
+            )
+        </if>
+        <if test="startTime != null">
+            and gmt_publish &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and gmt_publish &lt;= #{endTime}
+        </if>
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        order by recommended_time desc,gmt_create desc
+    </select>
+    <select id="listNodeDetails" resultType="com.sandu.api.basesupplydemand.model.NodeDetails">
+        select node.id as nodeId,node.content_id ,node.node_type,detail.detail_type as detailsType,detail.value from
+        node_info
+        node
+        left join node_info_detail detail on node.id = detail.node_id
+        where node.node_type = #{nodeType}
+        and content_id in
+        <foreach collection="contentIds" separator="," open="(" close=")" item="it">
+            #{it}
+        </foreach>
+        <if test="detailTypes != null and detailTypes.size > 0">
+            and detail_type in
+            <foreach collection="detailTypes" separator="," close=")" open="(" item="it">
+                #{it}
+            </foreach>
+        </if>
+    </select>
+    <select id="fetchPlanNameByDemandId" resultType="java.lang.String">
+        select
+        case
+            when plan_type  in  (2,4) then (select plan_name from full_house_design_plan where id = t.plan_id)
+            when plan_type =  1 then (select plan_name from design_plan_recommended where id = t.plan_id)
+            when plan_type =  3 then (select plan_name from design_plan_render_scene where id = t.plan_id)
+        end planName
+        from
+        (select info.plan_id,info.plan_type from demand_info_rel info
+                where info.supply_demand_id = #{id}  limit  1)
+                as t;
+    </select>
+    <select id="fetchHouseNameByDemandId" resultType="java.lang.String">
+        select house_name from demand_info_rel info,base_house house
+        where  info.house_id = house.id and  info.supply_demand_id = #{id}  limit  1
+    </select>
+    <select id="getBaseHouseByDemandId" resultType="com.sandu.api.basesupplydemand.model.BaseHouse">
+        select house.* from demand_info_rel info,base_house house
+        where  info.house_id = house.id and  info.supply_demand_id = #{id}  limit  1
+    </select>
+    <select id="listSpaceDetailsByHouseId" resultType="com.sandu.api.basesupplydemand.model.SpaceCommon">
+       SELECT
+        case sd.att1
+            when 1 then '厅'
+            when 2 then '室'
+        end as space_name,
+               sc.origin,
+               count(1) as spaceNum
+        FROM base_house bh
+               inner JOIN house_space_new hsn ON bh.id = hsn.house_id
+               inner join space_common sc on hsn.standard_space_id = sc.id and sc.is_deleted = 0
+               inner join sys_dictionary sd on sc.space_function_id = sd.value and sd.type = 'houseType'
+        WHERE bh.id = #{houseId}
+        group by sc.origin, sd.att1;
+    </select>
+    <select id="fetchPlanNameByIdAndType" resultType="java.lang.String">
+        select
+        case
+            when plan_type  in  (2,4) then (select plan_name from full_house_design_plan where id = t.plan_id)
+            when plan_type =  1 then (select plan_name from design_plan_recommended where id = t.plan_id)
+            when plan_type =  3 then (select plan_name from design_plan_render_scene where id = t.plan_id)
+        end planName
+        from
+        (select #{id} as plan_id ,#{type} as plan_type)
+                as t
+    </select>
+    <select id="getDemandRelInfo" resultType="com.sandu.api.basesupplydemand.model.DemandInfoRel">
+        select * from demand_info_rel where supply_demand_id = #{basesupplydemandId} and (is_deleted is null or is_deleted = 0);
+    </select>
+    <select id="getBaseHouseByHouseId" resultType="com.sandu.api.basesupplydemand.model.BaseHouse">
+        select house.* from base_house house
+        where  house.id = #{houseId} and is_deleted = 0  limit  1
+    </select>
+    <select id="listNodeInfoByContentIdsAndNodeType"
+            resultType="com.sandu.api.basesupplydemand.model.NodeDetails">
+        select node.id as nodeId,node.content_id ,node.node_type from
+        node_info
+        node
+        where node.node_type = #{nodeType}
+        and content_id in
+        <foreach collection="contentIds" separator="," open="(" close=")" item="it">
+            #{it}
+        </foreach>
+    </select>
+    <select id="getResPicByIds" resultType="com.sandu.api.goods.model.ResPic">
+        select id,pic_path
+        from supply_demand_pic rp where rp.id in
+        <foreach collection="picIds" separator="," item="it" open="(" close=")">
+            #{it}
+        </foreach>
+    </select>
+
+    <insert id="insertInteractiveZoneTopic" parameterType="com.sandu.api.basesupplydemand.model.InteractiveZoneTopic">
+        insert into interactive_zone_topic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="picIds != null">
+                pic_ids,
+            </if>
+            <if test="blockType != null">
+                block_type,
+            </if>
+            <if test="coverPicId != null">
+                cover_pic_id,
+            </if>
+            <if test="shareType != null">
+                share_type,
+            </if>
+            <if test="livingRoomNum != null">
+                living_room_num,
+            </if>
+            <if test="bedroomNum != null">
+                bedroom_num,
+            </if>
+            <if test="houseArea != null">
+                house_area,
+            </if>
+            <if test="houseCost != null">
+                house_cost,
+            </if>
+            <if test="houseStyle != null">
+                house_stytle,
+            </if>
+            <if test="planId != null">
+                plan_id,
+            </if>
+            <if test="planType != null">
+                plan_type,
+            </if>
+            <if test="houseId != null">
+                house_id,
+            </if>
+            <if test="planCoverId != null">
+                plan_cover_id,
+            </if>
+            <if test="houseCoverId != null">
+                house_cover_id,
+            </if>
+            <if test="articleSource != null">
+                article_source,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="articleId != null">
+                article_id,
+            </if>
+            <if test="projectCaseId != null">
+                project_case_id,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="isTop != null">
+                is_top,
+            </if>
+            <if test="ordering != null">
+                ordering,
+            </if>
+            <if test="publishUserId != null">
+                publish_user_id,
+            </if>
+            <if test="publishTime != null">
+                publish_time,
+            </if>
+            <if test="dataSource != null">
+                data_source,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="jsonContent != null">
+                json_content,
+            </if>
+            <if test="lastReviewTime != null">
+                last_review_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="picIds != null">
+                #{picIds,jdbcType=VARCHAR},
+            </if>
+            <if test="blockType != null">
+                #{blockType,jdbcType=INTEGER},
+            </if>
+            <if test="coverPicId != null">
+                #{coverPicId,jdbcType=INTEGER},
+            </if>
+            <if test="shareType != null">
+                #{shareType,jdbcType=INTEGER},
+            </if>
+            <if test="livingRoomNum != null">
+                #{livingRoomNum,jdbcType=INTEGER},
+            </if>
+            <if test="bedroomNum != null">
+                #{bedroomNum,jdbcType=INTEGER},
+            </if>
+            <if test="houseArea != null">
+                #{houseArea,jdbcType=REAL},
+            </if>
+            <if test="houseCost != null">
+                #{houseCost,jdbcType=REAL},
+            </if>
+            <if test="houseStyle != null">
+                #{houseStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="planId != null">
+                #{planId,jdbcType=INTEGER},
+            </if>
+            <if test="planType != null">
+                #{planType,jdbcType=INTEGER},
+            </if>
+            <if test="houseId != null">
+                #{houseId,jdbcType=INTEGER},
+            </if>
+            <if test="planCoverId != null">
+                #{planCoverId,jdbcType=INTEGER},
+            </if>
+            <if test="houseCoverId != null">
+                #{houseCoverId,jdbcType=INTEGER},
+            </if>
+            <if test="articleSource != null">
+                #{articleSource,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="articleId != null">
+                #{articleId,jdbcType=INTEGER},
+            </if>
+            <if test="projectCaseId != null">
+                #{projectCaseId,jdbcType=INTEGER},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=INTEGER},
+            </if>
+            <if test="isTop != null">
+                #{isTop,jdbcType=INTEGER},
+            </if>
+            <if test="ordering != null">
+                #{ordering,jdbcType=INTEGER},
+            </if>
+            <if test="publishUserId != null">
+                #{publishUserId,jdbcType=INTEGER},
+            </if>
+            <if test="publishTime != null">
+                #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dataSource != null">
+                #{dataSource,jdbcType=INTEGER},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=INTEGER},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="jsonContent != null">
+                #{jsonContent,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="lastReviewTime != null">
+                #{lastReviewTime},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertInteractiveZoneReply">
+        insert into interactive_zone_reply
+        (
+          id, topic_id, pic_ids, block_type,
+          is_best_answer, is_top, creator,
+          plan_id,plan_type,house_id,data_source,reply_user_id,
+          gmt_create, modifier, gmt_modified,
+          is_deleted, content, json_content
+        )
+    values
+        <foreach collection="list" item="item" separator=",">
+          (
+              #{item.id,jdbcType=BIGINT}, #{item.topicId,jdbcType=BIGINT}, #{item.picIds,jdbcType=VARCHAR}, #{item.blockType,jdbcType=INTEGER},
+              #{item.isBestAnswer,jdbcType=INTEGER}, #{item.isTop,jdbcType=INTEGER}, #{item.creator,jdbcType=VARCHAR},
+              #{item.planId,jdbcType=INTEGER},#{item.planType,jdbcType=INTEGER},#{item.houseId,jdbcType=INTEGER},#{item.dataSource,jdbcType=INTEGER},#{item.replyUserId,jdbcType=INTEGER},
+              #{item.gmtCreate,jdbcType=TIMESTAMP}, #{item.modifier,jdbcType=VARCHAR}, #{item.gmtModified,jdbcType=TIMESTAMP},
+              #{item.isDeleted,jdbcType=INTEGER}, #{item.content,jdbcType=LONGVARCHAR}, #{item.jsonContent,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getNickName" resultType="string">
+        SELECT
+          nick_name
+        from
+          sys_user
+        WHERE
+          id = #{userId}
+          AND is_deleted = 0
+    </select>
+</mapper>

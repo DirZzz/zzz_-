@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.solution.dao.DesignPlanRecommendedSuperiorMapper">
+    <resultMap id="BaseResultMap" type="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="plan_code" property="planCode" jdbcType="VARCHAR"/>
+        <result column="plan_name" property="planName" jdbcType="VARCHAR"/>
+        <result column="design_plan_recommended_id" property="designPlanRecommendedId" jdbcType="INTEGER"/>
+        <result column="ordering" property="ordering" jdbcType="INTEGER"/>
+        <result column="space_type" property="spaceType" jdbcType="INTEGER"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="modifier" property="modifier" jdbcType="VARCHAR"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, plan_code, plan_name, design_plan_recommended_id, ordering, space_type, sys_code, 
+    creator, gmt_create, modifier, gmt_modified, is_deleted, remark
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from design_plan_recommended_superior
+        where id = #{id,jdbcType=BIGINT} and plan_type = 0
+    </select>
+    <select id="ListByPlanIdAndSpaceType" resultType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+        select superior.*
+        from design_plan_recommended_superior superior ,design_plan_recommended plan, space_common space
+        where  plan.space_common_id = space.id
+        and superior.space_type = space.space_function_id
+        and superior.is_deleted = 0 and plan.id = #{planId}
+        order by superior.ordering desc;
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from design_plan_recommended_superior
+    where id = #{id,jdbcType=BIGINT} and plan_type = 0
+  </delete>
+    <delete id="deleteByPlanId">
+        update  design_plan_recommended_superior
+        set is_deleted = 1,gmt_modified = now()
+        where design_plan_recommended_id = #{planId,jdbcType=BIGINT} and plan_type = 0
+    </delete>
+    <insert id="insert" parameterType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+    insert into design_plan_recommended_superior (id, plan_code, plan_name, 
+      design_plan_recommended_id, ordering, space_type, 
+      sys_code, creator, gmt_create, 
+      modifier, gmt_modified, is_deleted, 
+      remark,plan_type)
+    values (#{id,jdbcType=BIGINT}, #{planCode,jdbcType=VARCHAR}, #{planName,jdbcType=VARCHAR}, 
+      #{designPlanRecommendedId,jdbcType=INTEGER}, #{ordering,jdbcType=INTEGER}, #{spaceType,jdbcType=INTEGER}, 
+      #{sysCode,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR},#{planType})
+  </insert>
+    <insert id="insertSelective" parameterType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+        insert into design_plan_recommended_superior
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="planCode != null">
+                plan_code,
+            </if>
+            <if test="planName != null">
+                plan_name,
+            </if>
+            <if test="designPlanRecommendedId != null">
+                design_plan_recommended_id,
+            </if>
+            <if test="ordering != null">
+                ordering,
+            </if>
+            <if test="spaceType != null">
+                space_type,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="planCode != null">
+                #{planCode,jdbcType=VARCHAR},
+            </if>
+            <if test="planName != null">
+                #{planName,jdbcType=VARCHAR},
+            </if>
+            <if test="designPlanRecommendedId != null">
+                #{designPlanRecommendedId,jdbcType=INTEGER},
+            </if>
+            <if test="ordering != null">
+                #{ordering,jdbcType=INTEGER},
+            </if>
+            <if test="spaceType != null">
+                #{spaceType,jdbcType=INTEGER},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+        update design_plan_recommended_superior
+        <set>
+            <if test="planCode != null">
+                plan_code = #{planCode,jdbcType=VARCHAR},
+            </if>
+            <if test="planName != null">
+                plan_name = #{planName,jdbcType=VARCHAR},
+            </if>
+            <if test="designPlanRecommendedId != null">
+                design_plan_recommended_id = #{designPlanRecommendedId,jdbcType=INTEGER},
+            </if>
+            <if test="ordering != null">
+                ordering = #{ordering,jdbcType=INTEGER},
+            </if>
+            <if test="spaceType != null">
+                space_type = #{spaceType,jdbcType=INTEGER},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT} and plan_type = 0
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+    update design_plan_recommended_superior
+    set plan_code = #{planCode,jdbcType=VARCHAR},
+      plan_name = #{planName,jdbcType=VARCHAR},
+      design_plan_recommended_id = #{designPlanRecommendedId,jdbcType=INTEGER},
+      ordering = #{ordering,jdbcType=INTEGER},
+      space_type = #{spaceType,jdbcType=INTEGER},
+      sys_code = #{sysCode,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="findPutFullHousePlan" resultType="com.sandu.api.solution.model.DesignPlanRecommendedSuperior">
+        SELECT
+           *
+        from
+           design_plan_recommended_superior
+        WHERE
+           is_deleted = 0 and plan_type = 1
+    </select>
+</mapper>

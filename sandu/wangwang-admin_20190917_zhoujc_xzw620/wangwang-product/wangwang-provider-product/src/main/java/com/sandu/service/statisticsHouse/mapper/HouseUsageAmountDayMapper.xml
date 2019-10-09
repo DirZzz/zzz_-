@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.statisticsHouse.dao.HouseUsageAmountDayMapper">
+    <resultMap id="BaseResultMap" type="com.sandu.api.statisticsHouse.model.HouseUsageAmountDay">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="house_id" jdbcType="INTEGER" property="houseId"/>
+        <result column="house_name" jdbcType="VARCHAR" property="houseName"/>
+        <result column="house_code" jdbcType="VARCHAR" property="houseCode"/>
+        <result column="living_name" jdbcType="VARCHAR" property="livingName"/>
+        <result column="house_usage_amount" jdbcType="INTEGER" property="houseUsageAmount"/>
+        <result column="province_code" jdbcType="INTEGER" property="provinceCode"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_code" jdbcType="INTEGER" property="cityCode"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="MODIFIER" jdbcType="VARCHAR" property="modifer"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="useHouseTotal" jdbcType="INTEGER" property="useHouseTotal"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, start_time, end_time, house_id, house_name, house_code, living_name, house_usage_amount, province_code,
+        province_name, city_code, city_name, creator, gmt_create, MODIFIER, gmt_modified, is_deleted, remark
+    </sql>
+
+    <select id="selectDetailList" parameterType="com.sandu.api.statisticsHouse.model.HouseUsageAmountDay" resultMap="BaseResultMap">
+        SELECT * from (
+            SELECT
+            id,
+            house_code,
+            house_name,
+            living_name,
+            sum(house_usage_amount) useHouseTotal
+            from
+            data_statistics.bigdata_house_usage_amount_2b_day
+            WHERE
+            is_deleted = 0
+            <if test="provinceCode != null and provinceCode != '' ">
+                and province_code = #{provinceCode,jdbcType=VARCHAR}
+            </if>
+            <if test="cityCode != null and cityCode != '' ">
+                and city_code = #{cityCode,jdbcType=VARCHAR}
+            </if>
+            <if test="time == 0">
+                and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+            </if>
+            <if test="time == 1">
+                and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 2">
+                and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+            </if>
+            <if test="time == 3">
+                and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+            </if>
+            group by house_id
+            order by house_usage_amount desc
+            limit 0,30 ) as hotHouse
+    </select>
+
+    <select id="selectHotHouse" parameterType="com.sandu.api.statisticsHouse.model.HouseUsageAmountDay" resultMap="BaseResultMap">
+        SELECT
+            id,
+            house_name,
+            living_name,
+            sum(house_usage_amount) useHouseTotal
+        from
+            data_statistics.bigdata_house_usage_amount_2b_day
+        WHERE
+            is_deleted = 0
+        <if test="provinceCode != null and provinceCode != '' ">
+            and province_code = #{provinceCode,jdbcType=VARCHAR}
+        </if>
+        <if test="cityCode != null and cityCode != '' ">
+            and city_code = #{cityCode,jdbcType=VARCHAR}
+        </if>
+        <if test="time == 0">
+            and TO_DAYS( NOW( ) ) - TO_DAYS(start_time) = 1
+        </if>
+        <if test="time == 1">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 2">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(start_time)
+        </if>
+        <if test="time == 3">
+            and PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( start_time, '%Y%m' ) ) =1
+        </if>
+        group by house_id
+        order by house_usage_amount desc
+        limit 0,10
+    </select>
+
+</mapper>

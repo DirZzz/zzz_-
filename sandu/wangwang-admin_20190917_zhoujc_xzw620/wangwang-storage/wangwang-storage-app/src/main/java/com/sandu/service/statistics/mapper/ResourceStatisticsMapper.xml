@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sandu.service.statistics.dao.ResourceStatisticsDao" >
+
+    <!-- 查询用户 -->
+    <select id="listUser" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.UserDto">
+        SELECT
+            id,
+            user_type AS userType,
+            business_administration_id  AS businessAdministrationId,
+            company_id  AS companyId
+        FROM
+            sys_user
+        WHERE
+            is_deleted = 0
+            AND business_administration_id IS NOT NULL
+            AND business_administration_id != ''
+            AND company_id IS NOT NULL
+            AND company_id != ''
+            AND platform_type = 2
+        <if test="null != start and null != size">
+            limit #{start},#{size}
+        </if>
+    </select>
+
+    <!-- 查询用户方案配置资源 -->
+    <select id="selectUserPlanConfigSource" resultType="java.lang.Long" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto">
+        SELECT
+            IFNULL(sum( rd.file_size ),0)
+        FROM
+            res_design rd
+            INNER JOIN design_plan dp ON rd.id = dp.config_file_id OR rd.id = dp.spelling_flower_file_id
+        WHERE
+            rd.gmt_create BETWEEN #{startDate} AND #{endDate}
+            AND dp.user_id = #{userId}
+    </select>
+
+    <!-- 查询用户效果图方案配置资源 -->
+    <select id="selectUserScenePlanConfigSource" resultType="java.lang.Long" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto">
+        SELECT
+            IFNULL(sum( rdrs.file_size ),0)
+        FROM
+            design_plan_render_scene dprs
+            INNER JOIN res_design_render_scene rdrs ON rdrs.id = dprs.config_file_id OR rdrs.id = dprs.spelling_flower_file_id
+        WHERE
+            dprs.user_id = #{userId}
+            AND dprs.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询用户方案渲染资源 -->
+    <select id="selectUserPlanRenderSource" resultType="java.lang.Long" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto">
+        SELECT
+  		    IFNULL(sum( size ),0)
+	    FROM
+		(
+		    -- 当前时间方案渲染（除 方案渲染720漫游位置关系文件资源、方案渲染视频资源）的资源
+            SELECT
+                sum( rrp.pic_size ) AS size
+            FROM
+                res_render_pic rrp
+                INNER JOIN design_plan dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.business_id IS NOT NULL
+                AND dp.user_id = #{userId}
+            UNION ALL
+            -- 当前时间方案渲染720漫游位置关系文件资源
+            SELECT
+                sum( rd.file_size ) AS size
+            FROM
+                res_design rd
+                INNER JOIN design_render_roam drr ON rd.id = drr.roam_config
+                INNER JOIN res_render_pic rrp ON drr.screen_shot_id = rrp.id
+                INNER JOIN design_plan dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.business_id IS NOT NULL
+                AND dp.user_id = #{userId}
+                AND rrp.rendering_type = 8
+                AND rrp.id = rrp.sys_task_pic_id
+            UNION ALL
+            -- 当前时间方案渲染视频资源
+            SELECT
+                sum( rrv.video_size ) AS size
+            FROM
+                res_render_video rrv
+                INNER JOIN res_render_pic rrp ON rrv.sys_task_pic_id = rrp.id
+                INNER JOIN design_plan dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.business_id IS NOT NULL
+                AND dp.user_id = #{userId}
+                AND rrp.rendering_type = 6
+		) renderSize
+    </select>
+
+
+    <!-- 查询用户效果图方案渲染资源 -->
+    <select id="selectUserScenePlanRenderSource" resultType="java.lang.Long" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto">
+        SELECT
+            IFNULL(sum( size ),0)
+        FROM
+        (
+            -- 当前时间方案渲染（除 方案渲染720漫游位置关系文件资源、方案渲染视频资源）的资源
+            SELECT
+                sum( rrp.pic_size ) AS size
+            FROM
+                res_render_pic rrp
+                INNER JOIN design_plan_render_scene dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.design_scene_id IS NOT NULL
+                AND dp.user_id = #{userId}
+            UNION ALL
+            -- 当前时间方案渲染720漫游位置关系文件资源
+            SELECT
+                sum( rd.file_size ) AS size
+            FROM
+                res_design rd
+                INNER JOIN design_render_roam drr ON rd.id = drr.roam_config
+                INNER JOIN res_render_pic rrp ON drr.screen_shot_id = rrp.id
+                INNER JOIN design_plan_render_scene dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.design_scene_id IS NOT NULL
+                AND dp.user_id = #{userId}
+                AND rrp.rendering_type = 8
+                AND rrp.id = rrp.sys_task_pic_id
+            UNION ALL
+            -- 当前时间方案渲染视频资源
+            SELECT
+                sum( rrv.video_size ) AS size
+            FROM
+                res_render_video rrv
+                INNER JOIN res_render_pic rrp ON rrv.sys_task_pic_id = rrp.id
+                INNER JOIN design_plan_render_scene dp ON rrp.business_id = dp.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.design_scene_id IS NOT NULL
+                AND dp.user_id = #{userId}
+                AND rrp.rendering_type = 6
+        ) renderSize
+    </select>
+
+    <!-- 查询用户通用版上传材质 -->
+    <select id="selectUserTextureSource" resultType="java.lang.Long" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto">
+        SELECT
+            IFNULL(sum( file_size ),0)
+        FROM
+            res_texture
+        WHERE
+            creator_id = #{userId}
+    </select>
+
+    <!-- 查询店铺图片资源 -->
+    <select id="selectShopPicSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( size ),0)
+        FROM
+            (
+                SELECT
+                    sum( pic_size ) AS size
+                FROM
+                    res_pic
+                WHERE
+                    gmt_create  BETWEEN #{startDate} AND #{endDate}
+                    AND id IN
+                    <foreach collection="picIdList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                UNION ALL
+                SELECT
+                    sum( pic_size ) AS size
+                FROM
+                    res_pic
+                WHERE
+                    gmt_create  BETWEEN #{startDate} AND #{endDate}
+                    AND (
+                        <foreach collection="picIdList" item="item" open="(" separator="OR" close=")">
+                            locate(concat(concat(':',#{item}),';'), small_pic_info ) > 0
+                        </foreach>
+                    )
+            ) shopSource
+    </select>
+
+    <!-- 查询店铺介绍资源 -->
+    <select id="selectShopIntroducedSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( file_size ),0)
+        FROM
+            res_file
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND id IN
+            <foreach collection="fileIdList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+
+    <!-- 查询店铺封面、logo、介绍 资源id集合 -->
+    <select id="selectShop" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.ShopResourceDto">
+        SELECT
+            id,
+            logo_pic_id AS logoPicId,
+            cover_res_ids AS coverResIds,
+            introduced_file_id AS introducedFileId
+        FROM
+            company_shop
+        <where>
+          <if test="companyId != null"> AND company_id = #{companyId}</if>
+          <if test="userId != null">AND user_id = #{userId}</if>
+          <if test="shopType != null">AND shop_type = #{shopType}</if>
+        </where>
+    </select>
+
+    <!-- 查询店铺博文图片id集合 -->
+    <select id="selectShopArticleCover" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Integer">
+        SELECT
+            csa.cover_pic_id
+        FROM
+            company_shop_article csa
+            INNER JOIN company_shop cs ON csa.shop_id = cs.id
+        <where>
+            <if test="companyId != null"> AND company_id = #{companyId}</if>
+            <if test="userId != null">AND user_id = #{userId}</if>
+            <if test="shopType != null">AND shop_type = #{shopType}</if>
+        </where>
+    </select>
+
+    <!-- 查询店铺工程案例 封面、logo、介绍 资源id 集合 -->
+    <select id="selectShopCase" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.ShopResourceDto">
+        SELECT
+            pc.id,
+            pc.pic_ids AS picIds,
+            pc.file_id AS fileId,
+            pc.cover_pic_id AS coverPicId,
+            pc.house_type_pic_id AS houseTypePicId
+        FROM
+            project_case pc
+            INNER JOIN company_shop cs ON cs.id = pc.shop_id
+        <where>
+            <if test="companyId != null"> AND company_id = #{companyId}</if>
+            <if test="userId != null">AND user_id = #{userId}</if>
+            <if test="shopType != null">AND shop_type = #{shopType}</if>
+        </where>
+    </select>
+
+    <!--************************ 企业统计SQL ************************-->
+
+    <!-- 查询企业 -->
+    <select id="listCompany" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.CompanyDto">
+        SELECT
+            id,
+            pid,
+            business_type AS businessType,
+            brand_id  AS brandIds
+        FROM
+            base_company
+        WHERE
+            business_type IS NOT NULL
+            AND business_type != ''
+        <if test="null != start and null != size">
+        limit #{start},#{size}
+        </if>
+    </select>
+
+    <!-- 查询企业对应的品牌 -->
+    <select id="listBrand" resultType="java.lang.Integer">
+        SELECT
+            id
+        FROM
+            base_brand
+        WHERE
+            company_id = #{companyId}
+    </select>
+
+    <!-- 查询企业推荐方案配置资源 -->
+    <select id="selectCompanyPlanConfigSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum(rd.file_size),0)
+        FROM
+            res_design rd
+            INNER JOIN design_plan_recommended dpr ON rd.id = dpr.config_file_id OR rd.id = dpr.spelling_flower_file_id
+            INNER JOIN sys_user su ON dpr.user_id = su.id
+            INNER JOIN base_company bc ON su.business_administration_id = bc.id
+        WHERE
+            bc.id = #{companyId}
+            AND dpr.plan_source != 'share'
+            AND dpr.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询企业推荐方案渲染资源 -->
+    <select id="selectCompanyPlanRenderSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+  		    IFNULL(sum( size ),0)
+	    FROM
+		(
+		    -- 当前时间方案渲染（除 方案渲染720漫游位置关系文件资源、方案渲染视频资源）的资源
+            SELECT
+                sum( rrp.pic_size ) AS size
+            FROM
+                res_render_pic rrp
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN sys_user su ON dpr.user_id = su.id
+                INNER JOIN base_company bc ON su.business_administration_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+                AND dpr.plan_source != 'share'
+            UNION ALL
+            -- 当前时间方案渲染720漫游位置关系文件资源
+            SELECT
+                sum( rd.file_size ) AS size
+            FROM
+                res_design rd
+                INNER JOIN design_render_roam drr ON rd.id = drr.roam_config
+                INNER JOIN res_render_pic rrp ON drr.screen_shot_id = rrp.id
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN sys_user su ON dpr.user_id = su.id
+                INNER JOIN base_company bc ON su.business_administration_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+                AND dpr.plan_source != 'share'
+                AND rrp.rendering_type = 8
+                AND rrp.id = rrp.sys_task_pic_id
+            UNION ALL
+            -- 当前时间方案渲染视频资源
+            SELECT
+                sum( rrv.video_size ) AS size
+            FROM
+                res_render_video rrv
+                INNER JOIN res_render_pic rrp ON rrv.sys_task_pic_id = rrp.id
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN sys_user su ON dpr.user_id = su.id
+                INNER JOIN base_company bc ON su.business_administration_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+                AND dpr.plan_source != 'share'
+                AND rrp.rendering_type = 6
+		) renderSize
+    </select>
+
+    <!-- 查询企业共享分享推荐方案配置资源 -->
+    <select id="selectCompanySharePlanConfigSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( rd.file_size ),0)
+        FROM
+            res_design rd
+            INNER JOIN design_plan_recommended dpr ON rd.id = dpr.config_file_id OR rd.id = dpr.spelling_flower_file_id
+            INNER JOIN base_company bc ON dpr.company_id = bc.id
+        WHERE
+            bc.id = #{companyId}
+            AND dpr.plan_source = 'share'
+            AND dpr.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询企业共享分享推荐方案渲染资源 -->
+    <select id="selectCompanySharePlanRenderSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+  		    IFNULL(sum( size ),0)
+	    FROM
+		(
+		    -- 当前时间方案渲染（除 方案渲染720漫游位置关系文件资源、方案渲染视频资源）的资源
+            SELECT
+                sum( rrp.pic_size ) AS size
+            FROM
+                res_render_pic rrp
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN base_company bc ON dpr.company_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+				AND dpr.plan_source = 'share'
+            UNION ALL
+            -- 当前时间方案渲染720漫游位置关系文件资源
+            SELECT
+                sum( rd.file_size ) AS size
+            FROM
+                res_design rd
+                INNER JOIN design_render_roam drr ON rd.id = drr.roam_config
+                INNER JOIN res_render_pic rrp ON drr.screen_shot_id = rrp.id
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN base_company bc ON dpr.company_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+                AND dpr.plan_source = 'share'
+                AND rrp.rendering_type = 8
+                AND rrp.id = rrp.sys_task_pic_id
+            UNION ALL
+            -- 当前时间方案渲染视频资源
+            SELECT
+                sum( rrv.video_size ) AS size
+            FROM
+                res_render_video rrv
+                INNER JOIN res_render_pic rrp ON rrv.sys_task_pic_id = rrp.id
+                INNER JOIN design_plan_recommended dpr ON rrp.plan_recommended_id = dpr.id
+                INNER JOIN base_company bc ON dpr.company_id = bc.id
+            WHERE
+                rrp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                AND rrp.plan_recommended_id IS NOT NULL
+                AND bc.id = #{companyId}
+                AND dpr.plan_source = 'share'
+                AND rrp.rendering_type = 6
+		) renderSize
+    </select>
+
+    <!-- 查询企业材质信息 -->
+    <select id="listCompanyTextrue" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.TextureDto">
+        SELECT
+            id,
+            pic_id  AS picId,
+            thumbnail_id  AS thumbnailId,
+            normal_pic_id  AS normalPicId,
+            textureBall_file_id  AS textureBallFileId,
+            android_textureBall_file_id  AS androidTextureBallFileId,
+            ios_textureBall_file_id  AS iosTextureBallFileId
+        FROM
+            res_texture
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND creator_id = 0
+            AND (
+                company_id = #{companyId}
+                <if test="null != brandIds">
+                    OR locate( #{brandIds}, concat( brand_id, ',' ) > 0
+                </if>
+                )
+    </select>
+
+    <!-- 查询企业材质资源 -->
+    <select id="selectCompanyTextrueSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(SUM(file_size),0)
+        FROM
+            res_texture
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND creator_id = 0
+            AND (
+                company_id = #{companyId}
+                <if test="null != brandIdList and brandIdList.size > 0">
+                    OR brand_id IN
+                    <foreach collection="brandIdList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                )
+    </select>
+
+    <!-- 查询企业产品模型材质信息 -->
+    <select id="listCompanyModelTextrue" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.TextureDto">
+        SELECT
+            rt.id,
+            rt.pic_id  AS picId,
+            rt.file_size AS fileSize,
+            rt.thumbnail_id  AS thumbnailId,
+            rt.normal_pic_id  AS normalPicId,
+            rt.textureBall_file_id  AS textureBallFileId,
+            rt.android_textureBall_file_id  AS androidTextureBallFileId,
+            rt.ios_textureBall_file_id  AS iosTextureBallFileId
+        FROM
+            res_texture rt
+            INNER JOIN model_area_texture_rel matr ON rt.id = matr.texture_id
+            INNER JOIN model_area_rel mar ON matr.area_id = mar.id
+            INNER JOIN res_model rm ON mar.model_id = rm.id
+            INNER JOIN base_product bp ON rm.id = bp.model_id
+        WHERE
+            rm.gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND bp.gmt_modified BETWEEN #{startDate} AND #{endDate}
+            AND (
+                bp.company_id = #{companyId}
+                <if test="null != brandIdList and brandIdList.size > 0">
+                    OR bp.brand_id IN
+                    <foreach collection="brandIdList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                )
+    </select>
+
+    <!-- 查询企业模型产品 模型资源 -->
+    <select id="selectCompanyModelSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum(rm.model_size),0) AS size
+        FROM
+            res_model rm
+            INNER JOIN base_product bp ON rm.id = bp.model_id
+        WHERE
+            bp.gmt_modified  BETWEEN #{startDate} AND #{endDate}
+            AND rm.gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND (
+                bp.company_id = #{companyId}
+                <if test="null != brandIdList and brandIdList.size > 0">
+                    OR bp.brand_id IN
+                    <foreach collection="brandIdList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                )
+    </select>
+
+
+    <!-- 查询企业产品 图片信息 -->
+    <select id="listProductPic" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.ProductDto">
+        SELECT
+            id,
+            pic_id AS picId,
+            pic_ids AS picIds,
+            material_pic_ids AS materialPicIds
+        FROM
+            base_product
+        WHERE
+            gmt_modified  BETWEEN #{startDate} AND #{endDate}
+            AND (
+                company_id = #{companyId}
+                <if test="null != brandIdList and brandIdList.size > 0">
+                    OR brand_id IN
+                    <foreach collection="brandIdList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                )
+        <if test="null != isNotModel and isNotModel = 1">
+            AND ( model_id IS NULL OR model_id = '' )
+            AND is_complex_parquet = 1
+            AND is_created_texture = 1
+        </if>
+    </select>
+
+
+    <!-- 查询企业账号信息 -->
+    <select id="listCompanyUserList" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Integer">
+        SELECT
+            pic_id
+        FROM
+            sys_user
+        WHERE
+            business_administration_id = #{companyId}
+            AND gmt_modified  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+
+    <!-- 查询企业资源 -->
+    <select id="selectCompanySource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum(rp.pic_size),0) AS size
+        FROM
+            res_pic rp
+            INNER JOIN base_company bc ON rp.id = bc.company_logo
+        WHERE
+            rp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND bc.id = #{companyId}
+    </select>
+
+    
+    <!-- 查询企业门店资源信息 -->
+    <select id="listCompanyOffline" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.ShopResourceDto">
+        SELECT
+            id,
+            logo_pic_id AS logoPicId,
+            cover_pic_id AS coverResIds,
+            introduced_file_id AS introducedFileId
+        FROM
+            company_shop_offline
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND company_id = #{companyId}
+        <if test="null != claimCompanyId">
+            AND claim_company_id = #{claimCompanyId}
+        </if>
+    </select>
+    
+    <!-- 查询图片主图 -->
+    <select id="listPidPic" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.PicDto">
+        SELECT
+            id,small_pic_info
+        FROM
+            res_pic
+        WHERE
+            gmt_create BETWEEN #{startDate} AND #{endDate}
+            AND (
+                <foreach collection="picIdList" item="item" open="(" separator="OR" close=")">
+                    locate(concat(concat(':',#{item}),';'),small_pic_info ) > 0
+                </foreach>
+                )
+    </select>
+
+    <!-- 查询图片资源 -->
+    <select id="selectPicSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( pic_size ),0) AS size
+        FROM
+            res_pic force index(inx_gmt_create)
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND id IN
+            <foreach collection="picIdList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+
+    <!-- 根据模型id查询模型资源 -->
+    <select id="selectModelSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum(model_size),0) AS size
+        FROM
+            res_model rm force index(inx_gmt_create)
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+            AND id IN
+            <foreach collection="modelIdList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+
+    <!-- 查询户型信息 -->
+    <select id="listHouse" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.HouseDto">
+        SELECT
+            id,
+            pic_res1_id AS picRes1Id,
+            pic_res2_id AS picRes2Id,
+            pic_res3_id AS picRes3Id,
+            pic_res4_id AS picRes4Id,
+            pic_res_id AS picResId,
+            full_house_obj_id AS fullHouseObjId
+        FROM
+            base_house
+        WHERE
+            gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询户型对应空间信息 -->
+    <select id="listHouseSpace" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.HouseDto">
+        SELECT
+            sc.id,
+            sc.pic_id AS picId,
+            sc.daylight_u3d_model_id AS daylightU3dModelId,
+            sc.dusklight_u3d_model_id AS dusklightU3dModelId,
+            sc.nightlight_u3d_model_id AS nightlightU3dModelId
+        FROM
+            space_common sc
+            INNER JOIN house_space_new hsn ON sc.id = hsn.space_id
+            INNER JOIN base_house bh ON hsn.house_id = bh.id
+        WHERE
+             sc.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询户型对应空间对应样板房信息 -->
+    <select id="listHouseSpaceTemplet" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.HouseDto">
+        SELECT
+            dt.id,
+            dt.pic_id AS picId,
+            dt.config_file_id AS configFileId,
+            dt.effect_pic AS effectPic,
+            dt.pc_model_u3d_id AS pcModelU3dId,
+            dt.effect_plan_ids AS effetPlanIds
+        FROM
+            design_templet dt
+            INNER JOIN space_common sc ON dt.space_common_id = sc.id
+            INNER JOIN house_space_new hsn ON sc.id = hsn.space_id
+            INNER JOIN base_house bh ON hsn.house_id = bh.id
+        WHERE
+            dt.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 查询户型还原文件资源 -->
+    <select id="selectHouseFileSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum(file_size),0)
+        FROM
+            res_full_house_file
+        WHERE
+            id IN 
+            <foreach collection="fileIdList" item="item" open="(" separator="," close=")">
+                  #{item}
+            </foreach>
+            AND gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 获取供求信息资源 -->
+    <select id="selectSupplyDemandSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( sdp.pic_size ),0)
+        FROM
+            supply_demand_pic sdp
+            INNER JOIN base_supply_demand bsd ON FIND_IN_SET( sdp.id, bsd.cover_pic_id ) OR sdp.id = bsd.description_pic_id
+        WHERE
+            bsd.gmt_modified  BETWEEN #{startDate} AND #{endDate}
+            AND sdp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <!-- 获取互动区资源 -->
+    <select id="selectZoneSource" parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="java.lang.Long">
+        SELECT
+            IFNULL(sum( size ),0)
+        FROM
+            (
+                SELECT
+                    sum( sdp.pic_size ) AS size
+                FROM
+                    supply_demand_pic sdp
+                    INNER JOIN interactive_zone_msg izm ON sdp.id = izm.pic_id
+                WHERE
+                    izm.gmt_modified  BETWEEN #{startDate} AND #{endDate}
+                    AND sdp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                UNION ALL
+                SELECT
+                    sum( sdp.pic_size ) AS size
+                FROM
+                    supply_demand_pic sdp
+                    INNER JOIN interactive_zone_reply izr ON FIND_IN_SET( sdp.id, izr.pic_ids )
+                WHERE
+                    izr.gmt_modified  BETWEEN #{startDate} AND #{endDate}
+                    AND sdp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+                UNION ALL
+                SELECT
+                    sum( sdp.pic_size ) AS size
+                FROM
+                    supply_demand_pic sdp
+                    INNER JOIN interactive_zone_topic izt ON FIND_IN_SET( sdp.id, izt.pic_ids )
+                    OR sdp.id = izt.cover_pic_id
+                    OR sdp.id = izt.house_cover_id
+                WHERE
+                    izt.article_source = 0
+                    AND izt.gmt_modified  BETWEEN #{startDate} AND #{endDate}
+                    AND sdp.gmt_create  BETWEEN #{startDate} AND #{endDate}
+            ) size
+    </select>
+
+    <!-- 查询搬运互动信息 -->
+    <select id="listArticleSourceOne"  parameterType="com.sandu.api.statistics.dto.ResourceStatisticsDto" resultType="com.sandu.api.statistics.dto.PicDto">
+        SELECT
+            id,
+            pic_ids AS picIds,
+            cover_pic_id AS coverPicId,
+            house_cover_id AS houseCoverId
+        FROM
+            interactive_zone_topic
+        WHERE
+            article_source = 1
+            AND gmt_modified  BETWEEN #{startDate} AND #{endDate}
+    </select>
+</mapper>
