@@ -1,0 +1,52 @@
+//覆盖element样式
+
+@import './common';
+//导航条 三角形图标修改
+.el-submenu>.el-submenu__title .el-submenu__icon-arrow::before {
+    content: "\e790";
+    font-size: 14px;
+}
+.el-menu .is-opened>.el-submenu__title {
+    color: $theme-color !important;
+
+    .el-submenu__icon-arrow {
+        color: $theme-color !important;
+    }
+}
+
+.decorCustomer{
+    .el-dialog__header{
+        text-align: left;
+        border-bottom: 1px solid #e8e8e8;
+    }
+    .el-dialog__footer{
+        border-top: 1px solid #e8e8e8;
+    }
+}
+
+//图片预览组件样式
+.Img-preview {
+    .el-dialog__wrapper {
+        .el-dialog__header {
+            background: none;
+            padding: 0;
+            border: none;
+        }
+
+        .el-dialog {
+            background: none;
+            width: 1080px;
+            height: 610px;
+            box-shadow: 0 0 0 0;
+        }
+
+        .el-dialog__body {
+            border: none;
+            padding: 0;
+        }
+
+        .el-dialog__close {
+            color: white;
+        }
+    }
+}

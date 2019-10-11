@@ -1,0 +1,64 @@
+.editMainAccount{
+  &-content{
+  }
+  &-header{
+    background-color: #fff;
+    text-indent: 20px;
+    padding: 20px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  &-tip{
+    background-color: #fff;
+    text-indent: 20px;
+    padding: 10px 0;
+    span{
+      color: #ff6419;
+    }
+  }
+  &-title{
+    background-color: #f0f0f0;
+    span{
+      display: inline-block;
+      width: 5px;
+      height: 40px;
+      line-height: 40px;
+      background-color: #ff6419;
+      vertical-align: middle;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+  }
+  &-form{
+    background-color: #fff;
+    height: 100%;
+    padding-top: 20px;
+    display: flex;
+    &-left{
+      flex:1;
+      .form-item{
+        width: 420px;
+      }
+    }
+    &-right{
+      flex:1;
+      .headPicPath{
+        width: 90px;
+        height: 90px;
+        line-height: 90px;
+        text-align: center;
+        background-color: #f6f6f6;
+        margin-right: 20px;
+      }
+      .avatar-uploader{
+        color: #ff6419;
+      }
+    }
+  }
+  &-btn{
+    background-color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid #f5f5f5;
+  }
+}

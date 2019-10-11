@@ -1,0 +1,35 @@
+@import "mixin";
+.el-menu{
+  text-align: left;
+  background: #363636;
+    .is-opened{
+      color: #fff;
+      background: #363636;
+    }
+    .el-submenu__title {
+      text-align: left;
+      color: $font-color-gray;
+      &:hover{
+        color: $bg-color-white;
+        background: #363636;
+      }
+      .el-submenu__icon-arrow{
+        right: 120px;
+      }
+    }
+    .el-menu-item {
+      color: $font-color-gray;
+      background: #363636;
+      border-top: 1px solid $line-color-gray;
+      &:hover{
+        color: $bg-color-white;
+        background: #363636;
+      }
+      .is-active{
+        color: $bg-color-white;
+      }
+    }
+  .el-submenu {
+    border-bottom: 1px solid $line-color-gray;
+  }
+}
